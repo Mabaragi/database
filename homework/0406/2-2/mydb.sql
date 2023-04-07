@@ -1,0 +1,23 @@
+CREATE TABLE zoo (
+  name TEXT NOT NULL,
+  eat TEXT NOT NULL,
+  weight INT,
+  height INT,
+  age INT
+);
+
+-- 1) 
+INSERT INTO zoo (age, height, weight, name, eat) VALUES 
+(5, 180, 210, 'gorilla', 'omnivore');
+
+DELETE FROM zoo;
+DROP TABLE zoo;
+
+-- 2)
+INSERT INTO zoo (rowid, name, eat, weight, age) VALUES
+(10,'dolphin', 'carnivore', 210, 3),
+(11, 'alligator', 'carnivore', 250, 50);
+
+-- 3)
+INSERT INTO zoo (name, eat, age) VALUES
+('dolphin', 'carnivore', 3);
