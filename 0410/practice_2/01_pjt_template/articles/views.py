@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Article, Comment
-from .forms import ArticleForm,CommentForm
+from .forms import ArticleForm, CommentForm
 
 # Create your views here.
 def index(request):
@@ -11,13 +11,12 @@ def index(request):
 
 def detail(request, pk):
     article = Article.objects.get(pk=pk)
-    # comments = article.comment_set.all()
-    comments = Comment.objects.filter(article=article)
+    comments = article.comment_set.all()
     comment_form = CommentForm()
     context = {
         'article': article,
         'comment_form': comment_form,
-        'comments' :comments
+        'comments': comments,
         }
     return render(request, 'articles/detail.html', context)
 
@@ -39,39 +38,34 @@ def create(request):
 
 def delete(request, pk):
     article = Article.objects.get(pk=pk)
-    if article.user == request.user:
-        article.delete()
-        return redirect('articles:index')
-    else: return redirect('articles:detail', pk=pk)
+    article.delete()
+    return redirect('articles:index')
 
 
 def update(request, pk):
     article = Article.objects.get(pk=pk)
-    if request.user == article.user:
-        if request.method == 'POST':
-            form = ArticleForm(request.POST, request.FILES, instance=article)
-            if form.is_valid():
-                form.save()
-                return redirect('articles:detail', pk=article.pk)
-        else:
-            form = ArticleForm(instance=article)
 
-        context = {'form': form, 'article': article}
-        return render(request, 'articles/update.html', context)
-    else: return redirect('articles:detail', pk=pk)
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, request.FILES, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('articles:detail', pk=article.pk)
+    else:
+        form = ArticleForm(instance=article)
+
+    context = {'form': form, 'article': article}
+    return render(request, 'articles/update.html', context)
 
 def comments_create(request, pk):
-    article = Article.objects.get(pk = pk)
+    article = Article.objects.get(pk=pk)
     comment = CommentForm(request.POST)
     if comment.is_valid():
         comment = comment.save(commit=False)
         comment.article = article
-        comment.user = request.user
         comment.save()
-    return redirect('articles:detail', pk=pk)
+    return redirect('articles:detail', pk = pk)
 
 def comments_delete(request, article_pk, comment_pk):
-    comment = Comment.objects.get( pk = comment_pk)
-    if request.user == comment.user:
-        comment.delete()
-    return redirect('articles:detail', article_pk)
+    comment = Comment.objects.get(pk = comment_pk)
+    comment.delete()
+    return redirect('articles:detail', pk = article_pk)

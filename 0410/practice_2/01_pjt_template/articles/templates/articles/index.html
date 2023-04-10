@@ -8,7 +8,6 @@
   {% for article in articles %}
     <p>
       [{{article.id}}] <a href="{% url 'articles:detail' article.pk %}" id="article-title">{{article.title}}</a>
-      작성자 : {{article.user}}
     </p>
     <hr />
   {% endfor %} 
